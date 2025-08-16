@@ -1,25 +1,43 @@
-let http = require('http');
-const express = require('express');
-const { Server } = require('socket.io');
-
-/*http.createServer(function(req,res) {
-    res.writeHead(200,{'Content-Type':'text/plain'});
-
-}).listen(8080);*/
+// backend.js
+const express = require("express");
+const http = require("http");
+const { Server } = require("socket.io");
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server,{cors:{origin:'*'}});
+const cors = require('cors');
 
-io.on('connection',(socket)=>{
-
-    console.log("Someone has connected");
-    socket.emit('userconnected','User has connected');
-
+// Allow CORS for both fetch and socket.io
+const io = new Server(server, {
+  cors: {
+    origin: "*", // Allow all origins (for testing)
+    methods: ["GET", "POST"]
+  }
 });
 
-server.listen(3000,()=>{
-    console.log("Server is listening");
+app.use(cors());
+
+
+// Simple API route that ALWAYS sends JSON
+app.get("/api/data", (req, res) => {
+  console.log("/api/data was hit");
+  res.setHeader("Cache-Control", "no-store");
+  res.json({ message: "Hello 2" });
 });
 
+// Socket.IO connection
+io.on("connection", (socket) => {
+  console.log("🔌 Client connected via Socket.IO");
+  socket.emit("server_message", "Welcome from Socket.IO");
 
+  socket.on("disconnect", () => {
+    console.log("Client disconnected");
+  });
+});
+
+// Start server
+const PORT = 3000;
+server.listen(PORT, () => {
+  console.log(`Backend running on http://localhost:${PORT}`);
+  //console.log(`➡ Start ngrok with: ngrok http ${PORT}`);
+});
