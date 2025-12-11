@@ -1,0 +1,6 @@
+Steps to get app running:
+
+1. Local backend running (node backend.js)
+2. Get ngrok URL running (ngrok http 3000)
+(Paste the newly generating URL into THEURL variable)
+3. Run the frontend (npx expo start --web or npx expo start for mobile)
