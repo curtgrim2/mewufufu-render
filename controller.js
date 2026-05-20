@@ -16,6 +16,13 @@ var io = new Server(server,{
     }
 
 });
+
+
+app.use('/',(req,res)=>{
+    res.send('Backend is working');
+});
+
+
 var path = require('path');
 app.use(express.static(path.join(__dirname,'./static'))); //serves static files from the static folder
 
