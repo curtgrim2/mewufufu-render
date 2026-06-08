@@ -5,4 +5,4 @@ RUN git clone https://github.com/curtgrim2/On-Repeat-Tournament .
 RUN ls -la
 RUN pip install --no-cache-dir -r requirements.txt
 EXPOSE 10000
-CMD ["gunicorn", "-b", "0.0.0.0:10000","router:app"]
+CMD ["python", "router.py"]
