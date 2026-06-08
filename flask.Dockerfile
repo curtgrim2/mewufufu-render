@@ -1,20 +1,15 @@
 FROM python:3.10-slim
 
-# 1. Install system utilities and the base ODBC manager tools
 RUN apt-get update && apt-get install -y \
     git \
-    wget \
+    curl \
     unixodbc \
     unixodbc-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# 2. Download and register the official Microsoft repository package for Debian 12 (Bookworm)
-RUN wget -qO- https://packages.microsoft.com/config/debian/12/packages-microsoft-prod.deb -O packages-microsoft-prod.deb \
-    && dpkg -i packages-microsoft-prod.deb \
-    && rm packages-microsoft-prod.deb
+RUN curl -L https://packages.microsoft.com/debian/12/prod/pool/main/m/msodbcsql17/msodbcsql17_17.10.2.1-1_amd64.deb -o msodbcsql17.deb
 
-# 3. Update apt to see the new MS repo, then install ODBC Driver 17
-RUN apt-get update && ACCEPT_EULA=Y apt-get install -y msodbcsql17
+RUN ACCEPT_EULA=Y dpkg -i msodbcsql17.deb && rm msodbcsql17.deb
 
 WORKDIR /app
 
