@@ -9,7 +9,8 @@ RUN apt-get update && apt-get install -y \
 
 RUN curl -L https://packages.microsoft.com/debian/12/prod/pool/main/m/msodbcsql17/msodbcsql17_17.10.2.1-1_amd64.deb -o msodbcsql17.deb
 
-RUN ACCEPT_EULA=Y dpkg -i msodbcsql17.deb && rm msodbcsql17.deb
+RUN ACCEPT_EULA=Y dpkg -i msodbcsql17.deb || apt-get install -f -y \
+    && rm msodbcsql17.deb
 
 WORKDIR /app
 
