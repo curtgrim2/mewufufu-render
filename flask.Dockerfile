@@ -1,16 +1,17 @@
-FROM python:3.10-slim
+FROM python:3.10
 
 RUN apt-get update && apt-get install -y \
     git \
     curl \
+    gnupg2 \
     unixodbc \
     unixodbc-dev \
     && rm -rf /var/lib/apt/lists/*
 
-RUN curl -L https://packages.microsoft.com/debian/12/prod/pool/main/m/msodbcsql17/msodbcsql17_17.10.2.1-1_amd64.deb -o msodbcsql17.deb
+RUN curl -fsSL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor -o /usr/share/keyrings/microsoft-prod.gpg \
+    && curl -fsSL https://packages.microsoft.com/config/debian/12/prod.list > /etc/apt/sources.list.d/mssql-release.list
 
-RUN ACCEPT_EULA=Y dpkg -i msodbcsql17.deb || apt-get install -f -y \
-    && rm msodbcsql17.deb
+RUN apt-get update && ACCEPT_EULA=Y apt-get install -y msodbcsql17
 
 WORKDIR /app
 
